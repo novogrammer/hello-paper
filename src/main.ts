@@ -1,6 +1,6 @@
-import './style.css'
 
 import paper from "paper";
+import './style.scss'
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <section class="p-section-first">
