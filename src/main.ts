@@ -1,10 +1,9 @@
-
-import paper from "paper";
+import ProjectA from './ProjectA';
 import './style.scss'
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <section class="p-section-first">
-    <canvas class="p-section-first__view"></canvas>
+    <canvas class="p-section-first__view" data-paper-resize="true"></canvas>
   </section>
 `
 
@@ -13,15 +12,12 @@ async function mainAsync(){
   if(!viewElement){
     throw new Error("viewElement is null");
   }
-  paper.setup(viewElement);
-  const path = new paper.Path();
-  path.strokeColor = new paper.Color('black');
-  const start = new paper.Point(100, 100);
-  path.moveTo(start);
+  const project=new ProjectA(viewElement);
 
-  path.lineTo(start.add([ 200, -50 ]));
-  // paper.view.draw();
-  path.
+  console.log(project.exportSVG({
+    asString:true,
+  }));
+
 }
 
 
