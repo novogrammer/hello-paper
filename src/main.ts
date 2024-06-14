@@ -1,4 +1,5 @@
-import ProjectA from './ProjectA';
+// import ProjectA from './ProjectA';
+import ProjectB from './ProjectB';
 import './style.scss'
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
@@ -39,7 +40,8 @@ async function mainAsync(){
     throw new Error("svgContainerElement is null");
   }
 
-  const project=new ProjectA(viewElement);
+  // const project=new ProjectA(viewElement);
+  const project=new ProjectB(viewElement);
 
   exportElement.addEventListener("click",()=>{
 
@@ -54,7 +56,7 @@ async function mainAsync(){
     const svgData=project.exportSVG({
       asString:true,
     }) as string;
-    downloadAsFile(svgData,"projectA.svg");
+    downloadAsFile(svgData,"project.svg");
 
   
   });
