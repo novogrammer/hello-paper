@@ -4,6 +4,7 @@ import './style.scss'
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <section class="p-section-first">
     <canvas class="p-section-first__view" data-paper-resize="true"></canvas>
+    <div class="p-section-first__svg-container"></div>
   </section>
   <div class="p-float">
     <button class="p-float__export">Export</button>
@@ -33,9 +34,23 @@ async function mainAsync(){
     throw new Error("exportElement is null");
   }
 
+  const svgContainerElement=document.querySelector<HTMLElement>(".p-section-first__svg-container");
+  if(!svgContainerElement){
+    throw new Error("svgContainerElement is null");
+  }
+
   const project=new ProjectA(viewElement);
 
   exportElement.addEventListener("click",()=>{
+
+    for(let child of svgContainerElement.children){
+      svgContainerElement.removeChild(child);
+    }
+    const svgElement=project.exportSVG({
+      asString:false,
+    }) as SVGElement;
+    svgContainerElement.appendChild(svgElement);
+
     const svgData=project.exportSVG({
       asString:true,
     }) as string;

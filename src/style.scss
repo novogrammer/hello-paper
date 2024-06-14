@@ -6,11 +6,14 @@ body {
 
 .p-section-first{
   width:100%;
-  height:100vh;
   &__view{
     display:block;
     width:100%;
-    height:100%;
+    height:100vh;
+  }
+  &__svg-container{
+    display:block;
+    min-height:100vh;
   }
 }
 
