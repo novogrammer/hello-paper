@@ -13,3 +13,13 @@ body {
     height:100%;
   }
 }
+
+.p-float{
+  &__export{
+    display:block;
+    position:fixed;
+    right:0;
+    bottom:0;
+
+  }
+}
