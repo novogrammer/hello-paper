@@ -3,14 +3,6 @@ import paper from "paper";
 export default class ProjectA extends paper.Project{
   constructor(element: string | HTMLCanvasElement | paper.SizeLike){
     super(element);
-    const path = new paper.Path({
-      parent:this,
-    });
-    path.strokeColor = new paper.Color('black');
-    const start = new paper.Point(100, 100);
-    path.moveTo(start);
-  
-    path.lineTo(start.add([ 200, -50 ]));
     
     var originals = new paper.Group({
       insert: false,
