@@ -44,23 +44,23 @@ export default class ProjectB extends paper.Project{
         color:new paper.Color("#ff0000"),
       },
       {
-        point:new paper.Point(400,0),
+        point:new paper.Point(100,400),
         color:new paper.Color("#00ff00"),
       },
       {
-        point:new paper.Point(400,400),
+        point:new paper.Point(200,200),
         color:new paper.Color("#0000ff"),
       },
       {
-        point:new paper.Point(0,400),
+        point:new paper.Point(400,400),
         color:new paper.Color("#ffff00"),
       },
       {
-        point:new paper.Point(0,0),
+        point:new paper.Point(400,0),
         color:new paper.Color("#ff0000"),
       },
       {
-        point:new paper.Point(400,0),
+        point:new paper.Point(200,100),
         color:new paper.Color("#00ff00"),
       },
     ];
