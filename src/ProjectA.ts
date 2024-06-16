@@ -1,5 +1,47 @@
 import paper from "paper";
 
+function makeLinePath(parent:paper.Group,from:paper.Point,to:paper.Point,lineWidth:number):paper.PathItem{
+  
+  const dir=to.subtract(from).normalize();
+  const up=dir.rotate(90,[0,0]);
+  const fixBugFactor=0.999;
+  const segments:paper.PointLike[]=[
+    from.add(up.multiply(lineWidth*-0.5*fixBugFactor)),
+    from.add(up.multiply(lineWidth*0.5*fixBugFactor)),
+    to.add(up.multiply(lineWidth*0.5*fixBugFactor)),
+    to.add(up.multiply(lineWidth*-0.5*fixBugFactor)),
+  ];
+
+  const path=new paper.Path({
+    segments,
+    parent,
+    closed:true,
+  });
+  return path;
+}
+
+function makeCapsulePath(parent:paper.Group,from:paper.Point,to:paper.Point,lineWidth:number):paper.PathItem{
+  const temporaryGroup=new paper.Group({
+    insert:false,
+  });
+  const linePath=makeLinePath(temporaryGroup,from,to,lineWidth);
+
+  const fromCircle=new paper.Path.Circle({
+    parent:temporaryGroup,
+    center:from,
+    radius:lineWidth*0.5,
+  });
+  const toCircle=new paper.Path.Circle({
+    parent:temporaryGroup,
+    center:to,
+    radius:lineWidth*0.5,
+  });
+  const path=linePath.unite(fromCircle).unite(toCircle);
+  path.addTo(parent);
+
+  return path;
+}
+
 export default class ProjectA extends paper.Project{
   constructor(element: string | HTMLCanvasElement | paper.SizeLike){
     super(element);
@@ -14,6 +56,17 @@ export default class ProjectA extends paper.Project{
         parent: originals,
         fillColor: new paper.Color('white'),
     });
+
+
+    const line = makeCapsulePath(
+      originals,
+      this.view.center.add(new paper.Point(-100,-100)),
+      this.view.center.add(new paper.Point(100,100)),
+      10,
+    );
+    
+    line.fillColor=new paper.Color('white');
+
     
     // Make a ring using subtraction of two circles:
     const inner = new paper.Path.Circle({
@@ -34,7 +87,8 @@ export default class ProjectA extends paper.Project{
     ring.position.x+=100;
     ring.position.y+=100;
   
-    const result = square.exclude(ring);
+    const result = square.exclude(ring).exclude(line);
+    // const result = square.exclude(ring);
     // result.selected = true;
     const gradient=new paper.Gradient();
     gradient.radial=true;
