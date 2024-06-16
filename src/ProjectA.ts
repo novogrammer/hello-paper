@@ -4,12 +4,11 @@ function makeLinePath(parent:paper.Group,from:paper.Point,to:paper.Point,lineWid
   
   const dir=to.subtract(from).normalize();
   const up=dir.rotate(90,[0,0]);
-  const fixBugFactor=0.999;
   const segments:paper.PointLike[]=[
-    from.add(up.multiply(lineWidth*-0.5*fixBugFactor)),
-    from.add(up.multiply(lineWidth*0.5*fixBugFactor)),
-    to.add(up.multiply(lineWidth*0.5*fixBugFactor)),
-    to.add(up.multiply(lineWidth*-0.5*fixBugFactor)),
+    from.add(up.multiply(lineWidth*-0.5)),
+    from.add(up.multiply(lineWidth*0.5)),
+    to.add(up.multiply(lineWidth*0.5)),
+    to.add(up.multiply(lineWidth*-0.5)),
   ];
 
   const path=new paper.Path({
@@ -26,15 +25,16 @@ function makeCapsulePath(parent:paper.Group,from:paper.Point,to:paper.Point,line
   });
   const linePath=makeLinePath(temporaryGroup,from,to,lineWidth);
 
+  const fixBugFactor=0.999;
   const fromCircle=new paper.Path.Circle({
     parent:temporaryGroup,
     center:from,
-    radius:lineWidth*0.5,
+    radius:lineWidth*0.5*fixBugFactor,
   });
   const toCircle=new paper.Path.Circle({
     parent:temporaryGroup,
     center:to,
-    radius:lineWidth*0.5,
+    radius:lineWidth*0.5*fixBugFactor,
   });
   const path=linePath.unite(fromCircle).unite(toCircle);
   path.addTo(parent);
