@@ -14,7 +14,7 @@ class Sampler{
   grayList:number[];
   grayTotal:number;
   constructor(source:string){
-    this.raster=new paper.Raster("./mona.jpg");
+    this.raster=new paper.Raster(source);
     this.raster.visible=false;
     this.isLoaded=false;
     this.grayList=[];
