@@ -18,19 +18,25 @@ export default class ProjectE extends paper.Project{
 
 
     const q=20;
-    const baseColorLch=chroma("orange").lch() as number[];
+
+    const getColor=(i:number):paper.Color=>{
+      // const scale=chroma.scale(["#e60012","#fff100","#009944","#00a0e9","#1d2088","#e4007f"]).mode("lch");
+      const scale=chroma.scale(["#0583F2","#0597F2","#05AFF2","#74BF04","#858F01"]).mode("lch").domain([0.00,0.33,0.66,0.67,1.00]);
+      const color=scale(i/20);
+      return new paper.Color(color.hex());
+    }
+
     for(let i=0;i<q;++i){
-      const color=chroma(baseColorLch[0],baseColorLch[1],(baseColorLch[2]+i/20*360)%360,"lch");
 
       const path = new paper.Path({
         strokeWidth: 0,
-        fillColor: new paper.Color(color.hex()),
+        fillColor: getColor(i),
         closed: true,
         blendMode:"multiply",
       });
 
       // const baseDeg=i/q*360;
-      const baseDeg=Math.pow(i,1.2)/q*360;
+      const baseDeg=Math.pow(i/q,1.2)*1.04*360;
 
       const unitWidth=0.2;
 
