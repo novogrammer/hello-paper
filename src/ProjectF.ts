@@ -1,4 +1,5 @@
 import paper from "paper";
+import { rgbToCmyk } from "./color_utils";
 
 
 interface FrameEvent{
@@ -8,35 +9,10 @@ interface FrameEvent{
 }
 
 
-interface RGB{
-  r:number;
-  g:number;
-  b:number;
-}
-interface CMYK{
-  c:number;
-  m:number;
-  y:number;
-  k:number;
-}
 
 
-function rgbToCmyk({ r, g, b }: RGB): CMYK {
-  const k = 1 - Math.max(r, g, b);
-  if (k === 1) {
-      return { c: 0, m: 0, y: 0, k: 1 };
-  }
-  const c = (1 - r - k) / (1 - k);
-  const m = (1 - g - k) / (1 - k);
-  const y = (1 - b - k) / (1 - k);
-  return { c, m, y, k };
-}
-function cmykToRgb({ c, m, y, k }: CMYK): RGB {
-  const r = (1 - c) * (1 - k);
-  const g = (1 - m) * (1 - k);
-  const b = (1 - y) * (1 - k);
-  return { r, g, b };
-}
+
+
 
 function hexSegments(innerRadius:number):paper.Point[]{
   const outerRadius=innerRadius / Math.sqrt(3) * 2;
@@ -60,7 +36,7 @@ export default class ProjectF extends paper.Project{
     super(element);
     this.isLoaded=false;
     this.raster=new paper.Raster("./mona.jpg");
-    // this.raster.remove();
+    this.raster.remove();
     // this.raster.position=this.view.center;
     this.raster.visible=false;
     this.raster.on("load",()=>{
@@ -77,7 +53,7 @@ export default class ProjectF extends paper.Project{
 
     // const area=new paper.Rectangle(0,0,400,300);
 
-    const innerRadius=10;
+    const innerRadius=8;
     const outerRadius=innerRadius / Math.sqrt(3) * 2;
 
     const {width,height}=this.view.bounds;
@@ -94,55 +70,94 @@ export default class ProjectF extends paper.Project{
       layer.removeChildren();
       this.raster.fitBounds(this.view.bounds,true);
 
+      const degBaseList=[15,75,30,45];
+      const colorList=[
+        new paper.Color("#00ffff"),
+        new paper.Color("#ff00ff"),
+        new paper.Color("#ffff00"),
+        new paper.Color("#000000"),
+      ];
 
-      for(let iy=-halfYQty;iy<=halfYQty;iy++){
-        const y=(outerRadius*1.5)*iy;
-        for(let ix=-halfXQty;ix<=halfXQty;ix++){
-          const x=(innerRadius*2)*ix-((iy%2==0)?0:innerRadius);
-          const matrix=new paper.Matrix();
-          matrix.translate(this.view.center);
-          matrix.rotate(performance.now()/1000*10,[0,0]);
-          matrix.translate([x,y]);
-      
-          const segments=hexSegments(innerRadius).map((point:paper.PointLike):paper.Point=>{
-            return matrix.transform(point);
-          });
-      
-      
-          const area=new paper.Path({
-            segments,
-            closed:true,
-            strokeWidth: 0,
-            fillColor: "black",
-            insert: false,
-          });
-      
-          const color=this.raster.getAverageColor(area);
-          if(color){
-            const cmyk = rgbToCmyk({
-              r:color.red,
-              g:color.green,
-              b:color.blue,
+      for(let ic=0;ic<4;ic++){
+        // const degTime=performance.now()/1000*10;
+        const degTime=0;
+        let deg=degBaseList[ic]+degTime;
+        for(let iy=-halfYQty;iy<=halfYQty;iy++){
+          const y=(outerRadius*1.5)*iy;
+          for(let ix=-halfXQty;ix<=halfXQty;ix++){
+            const x=(innerRadius*2)*ix-((iy%2==0)?0:innerRadius);
+            const matrixForSampling=new paper.Matrix();
+            matrixForSampling.translate(this.view.center);
+            matrixForSampling.rotate(deg,[0,0]);
+            matrixForSampling.translate([x,y]);
+        
+            const segments=hexSegments(innerRadius).map((point:paper.PointLike):paper.Point=>{
+              return matrixForSampling.transform(point);
             });
-            // cmyk.c=0;
-            // cmyk.m=0;
-            // cmyk.y=0;
-            // cmyk.k=0;
-            const rgb=cmykToRgb(cmyk);
-            const newColor=new paper.Color(rgb.r,rgb.g,rgb.b);
-            const polygon = new paper.Path({
+        
+        
+            const area=new paper.Path({
               segments,
               closed:true,
               strokeWidth: 0,
-              fillColor:newColor,
-              applyMatrix:false,
+              fillColor: "black",
+              insert: false,
             });
-      
-            layer.addChild(polygon);
-  
+        
+            const color=this.raster.getAverageColor(area);
+            if(color){
+              const cmyk = rgbToCmyk({
+                r:color.red,
+                g:color.green,
+                b:color.blue,
+              });
+              const cmykEach={
+                c:0,
+                m:0,
+                y:0,
+                k:0,
+              };
+
+              let scale:number;
+              switch(ic){
+                case 0:
+                  scale=Math.sqrt(cmyk.c);
+                  break;
+                case 1:
+                  scale=Math.sqrt(cmyk.m);
+                  break;
+                case 2:
+                  scale=Math.sqrt(cmyk.y);
+                  break;
+                case 3:
+                  scale=Math.sqrt(cmyk.k);
+                  break;
+                default:
+                  throw new Error("unexpected ic");
+              }
+              // cmyk.c=0;
+              // cmyk.m=0;
+              // cmyk.y=0;
+              // cmyk.k=0;
+
+              const polygonSegments=hexSegments(innerRadius * scale).map((point:paper.PointLike):paper.Point=>{
+                return matrixForSampling.transform(point);
+              });
+              const polygon = new paper.Path({
+                segments:polygonSegments,
+                closed:true,
+                strokeWidth: 0,
+                fillColor:colorList[ic],
+                applyMatrix:false,
+                blendMode:"multiply",
+              });
+        
+              layer.addChild(polygon);
+    
+            }
+
+
           }
-
-
         }
       }
   
