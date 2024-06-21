@@ -1,9 +1,9 @@
 // import ProjectA from './ProjectA';
 // import ProjectB from './ProjectB';
-// import ProjectC from './ProjectC';
+import ProjectC from './ProjectC';
 // import ProjectD from './ProjectD';
 // import ProjectE from './ProjectE';
-import ProjectF from './ProjectF';
+// import ProjectF from './ProjectF';
 import './style.scss'
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
@@ -46,10 +46,10 @@ async function mainAsync(){
 
   // const project=new ProjectA(viewElement);
   // const project=new ProjectB(viewElement);
-  // const project=new ProjectC(viewElement);
+  const project=new ProjectC(viewElement);
   // const project=new ProjectD(viewElement);
   // const project=new ProjectE(viewElement);
-  const project=new ProjectF(viewElement);
+  // const project=new ProjectF(viewElement);
 
   exportElement.addEventListener("click",()=>{
 
