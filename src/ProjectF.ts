@@ -53,7 +53,7 @@ export default class ProjectF extends paper.Project{
 
     // const area=new paper.Rectangle(0,0,400,300);
 
-    const innerRadius=8;
+    const innerRadius=10;
     const outerRadius=innerRadius / Math.sqrt(3) * 2;
 
     const {width,height}=this.view.bounds;
@@ -79,8 +79,8 @@ export default class ProjectF extends paper.Project{
       ];
 
       for(let ic=0;ic<4;ic++){
-        // const degTime=performance.now()/1000*10;
-        const degTime=0;
+        const degTime=performance.now()/1000*10;
+        // const degTime=0;
         let deg=degBaseList[ic]+degTime;
         for(let iy=-halfYQty;iy<=halfYQty;iy++){
           const y=(outerRadius*1.5)*iy;
@@ -111,12 +111,12 @@ export default class ProjectF extends paper.Project{
                 g:color.green,
                 b:color.blue,
               });
-              const cmykEach={
-                c:0,
-                m:0,
-                y:0,
-                k:0,
-              };
+              // const cmykEach={
+              //   c:0,
+              //   m:0,
+              //   y:0,
+              //   k:0,
+              // };
 
               let scale:number;
               switch(ic){
